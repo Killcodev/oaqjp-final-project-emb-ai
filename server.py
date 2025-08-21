@@ -9,8 +9,13 @@ def render_index_page():
 
 @app.route("/emotionDetector")
 def emo_detector():
-    text_to_analyze = request.args.get('textToAnalyze')
+    text_to_analyze = request.args.get('textToAnalyze', '')
     response = emotion_detector(text_to_analyze)
+
+    # Error-handling requirement: if dominant_emotion is None → show error message
+    if response.get("dominant_emotion") is None:
+        return "Invalid text! Please try again!"
+
     resp_anger = response["anger"]
     resp_disgust = response["disgust"]
     resp_fear = response["fear"]
