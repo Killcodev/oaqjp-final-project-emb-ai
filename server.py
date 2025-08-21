@@ -7,7 +7,6 @@ app = Flask("Emotion Detector")
 def render_index_page():
     return render_template('index.html')
 
-
 @app.route("/emotionDetector")
 def emo_detector():
     text_to_analyze = request.args.get('textToAnalyze')
@@ -28,9 +27,7 @@ def emo_detector():
     f" - Sadness: {resp_sadness}\n"
     f"The dominant emotion is: {resp_dominant}."
     )
-
     return response_str
-
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
