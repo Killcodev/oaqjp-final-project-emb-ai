@@ -1,15 +1,33 @@
+"""Flask web server exposing an emotion detection service with error handling."""
+
 from flask import Flask, render_template, request
 from EmotionDetection.emotion_detection import emotion_detector
 
 app = Flask("Emotion Detector")
 
+
 @app.route("/")
 def render_index_page():
-    return render_template('index.html')
+    """Render the index.html landing page.
+
+    Returns:
+        str: Rendered HTML content for the index page.
+    """
+    return render_template("index.html")
+
 
 @app.route("/emotionDetector")
-def emo_detector():
-    text_to_analyze = request.args.get('textToAnalyze', '')
+def emo_detector() -> str:
+    """Analyze emotions in a given text and return a formatted response.
+
+    Query Parameters:
+        textToAnalyze (str): The text to analyze, passed as a query parameter.
+
+    Returns:
+        str: A formatted string of emotion scores and the dominant emotion,
+        or an error message if the input text is invalid.
+    """
+    text_to_analyze = request.args.get("textToAnalyze", "")
     response = emotion_detector(text_to_analyze)
 
     # Error-handling requirement: if dominant_emotion is None → show error message
@@ -24,15 +42,16 @@ def emo_detector():
     resp_dominant = response["dominant_emotion"]
 
     response_str = (
-    "For the given statement, the system response is:\n"
-    f" - Anger: {resp_anger}\n"
-    f" - Disgust: {resp_disgust}\n"
-    f" - Fear: {resp_fear}\n"
-    f" - Joy: {resp_joy}\n"
-    f" - Sadness: {resp_sadness}\n"
-    f"The dominant emotion is: {resp_dominant}."
+        "For the given statement, the system response is:\n"
+        f" - Anger: {resp_anger}\n"
+        f" - Disgust: {resp_disgust}\n"
+        f" - Fear: {resp_fear}\n"
+        f" - Joy: {resp_joy}\n"
+        f" - Sadness: {resp_sadness}\n"
+        f"The dominant emotion is: {resp_dominant}."
     )
     return response_str
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
